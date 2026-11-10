@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#155eef">
+<title>Shivkant Search V2</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f7f9fc;
+ color:#202124;
+}
+header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:15px;
+ background:white;
+ box-shadow:0 1px 5px #ddd;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+ width:43px;height:43px;
+ background:#155eef;
+ border-radius:14px;
+ display:grid;place-items:center;
+ color:white;font-size:24px;
+ font-weight:bold;
+}
+.brand h2{margin:0;font-size:20px}
+main{
+ max-width:750px;
+ margin:45px auto;
+ padding:15px;
+}
+.hero{text-align:center}
+.hero h1{
+ font-size:38px;
+ color:#155eef;
+ margin-bottom:8px;
+}
+.hero p{color:#777}
+.search{
+ display:flex;
+ background:white;
+ border:1px solid #ddd;
+ border-radius:30px;
+ padding:7px;
+ margin-top:25px;
+ box-shadow:0 3px 12px #ddd;
+}
+.search input{
+ flex:1;min-width:0;
+ border:0;outline:0;
+ font-size:16px;
+ padding:12px;
+ background:transparent;
+}
+button{
+ cursor:pointer;
+ border:0;
+ border-radius:20px;
+ padding:11px 16px;
+}
+.search button{
+ background:#155eef;
+ color:white;
+}
+.mic{
+ background:#eee;
+ margin-left:5px;
+}
+.tabs{
+ display:flex;
+ justify-content:center;
+ gap:8px;
+ margin:20px 0;
+ flex-wrap:wrap;
+}
+.tabs button{
+ background:white;
+ border:1px solid #ddd;
+}
+.tabs button.active{
+ background:#155eef;
+ color:white;
+}
+.panel{
+ background:white;
+ border-radius:13px;
+ padding:15px;
+ margin-top:15px;
+}
+.result{
+ padding:14px 0;
+ border-bottom:1px solid #eee;
+ text-align:left;
+}
+.result a{
+ color:#155eef;
+ font-size:18px;
+ text-decoration:none;
+}
+.result p{
+ color:#555;
+ font-size:14px;
+ line-height:1.5;
+}
+.small{font-size:12px;color:#888}
+input,textarea{
+ font-family:Arial;
+}
+.field{
+ width:100%;
+ padding:12px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ margin:7px 0;
+ font-size:15px;
+}
+.primary{
+ background:#155eef;color:white;
+}
+.secondary{
+ background:#eee;color:#222;
+}
+.history-item{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:10px 0;
+ border-bottom:1px solid #eee;
+}
+.history-item span{
+ cursor:pointer;
+ flex:1;
+}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#777;
+ font-size:13px;
+}
+.hidden{display:none}
+.dark{
+ background:#171923;color:white;
+}
+.dark header,.dark .panel,.dark .search,
+.dark .tabs button{
+ background:#252a38;color:white;
+ border-color:#444;
+}
+.dark input,.dark textarea{
+ color:white;
+}
+.dark .result p{color:#ddd}
+.dark .result{border-color:#444}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="brand">
+  <div class="logo">S</div>
+  <h2>Shivkant Search</h2>
+ </div>
+ <button class="secondary" onclick="theme()">
+ 🌙
+ </button>
+</header>
+
+<main>
+
+<div class="hero">
+ <h1>Shivkant</h1>
+ <p>आपकी अपनी Search दुनिया</p>
+</div>
+
+<div class="search">
+ <input id="query"
+ placeholder="यहाँ कुछ भी खोजें..."
+ onkeydown="if(event.key==='Enter') searchNow()">
+ <button class="mic" onclick="voiceSearch()">🎙️</button>
+ <button onclick="searchNow()">खोजें</button>
+</div>
+
+<div class="tabs">
+ <button id="webTab" class="active"
+ onclick="setMode('web')">🌐 Web</button>
+
+ <button id="dbTab"
+ onclick="setMode('db')">📚 My Database</button>
+
+ <button id="imgTab"
+ onclick="setMode('img')">🖼️ Images</button>
+</div>
+
+<div id="results" class="panel">
+ <h3>नमस्ते! Shivkant Search में आपका स्वागत है।</h3>
+ <p>खोजने के लिए ऊपर कुछ लिखें।</p>
+</div>
+
+<div class="panel">
+ <h3>🕘 Search History</h3>
+ <div id="history"></div>
+ <button class="secondary" onclick="clearHistory()">
+ History साफ करें
+ </button>
+</div>
+
+<div class="panel">
+ <h3>➕ अपना Search Database</h3>
+ <p class="small">अपनी वेबसाइट का नाम, लिंक और जानकारी जोड़ें।</p>
+
+ <input id="siteTitle" class="field"
+ placeholder="वेबसाइट का नाम">
+
+ <input id="siteUrl" class="field"
+ placeholder="https://example.com">
+
+ <textarea id="siteDesc" class="field"
+ placeholder="वेबसाइट की जानकारी"></textarea>
+
+ <button class="primary" onclick="addSite()">
+ वेबसाइट जोड़ें
+ </button>
+
+ <button class="secondary" onclick="showSites()">
+ सभी वेबसाइट देखें
+ </button>
+</div>
+
+</main>
+
+<footer>
+ © 2026 Shivkant Search V2<br>
+ Your Search • Your World
+</footer>
+
+<script>
+
+let mode = "web";
+
+let sites = JSON.parse(
+ localStorage.getItem("shivkantSites") || "null"
+);
+
+if(!sites){
+ sites = [
+  {
+   title:"Google",
+   url:"https://www.google.com",
+   desc:"वेब सर्च इंजन"
+  },
+  {
+   title:"Wikipedia",
+   url:"https://www.wikipedia.org",
+   desc:"ऑनलाइन ज्ञानकोश"
+  },
+  {
+   title:"YouTube",
+   url:"https://www.youtube.com",
+   desc:"वीडियो वेबसाइट"
+  },
+  {
+   title:"MDN Web Docs",
+   url:"https://developer.mozilla.org",
+   desc:"वेब डेवलपमेंट सीखें"
+  }
+ ];
+ saveSites();
+}
+
+function saveSites(){
+ localStorage.setItem(
+  "shivkantSites",
+  JSON.stringify(sites)
+ );
+}
+
+function setMode(m){
+ mode=m;
+
+ ["webTab","dbTab","imgTab"].forEach(
+  id=>document.getElementById(id).classList.remove("active")
+ );
+
+ document.getElementById(
+  m==="web"?"webTab":
+  m==="db"?"dbTab":"imgTab"
+ ).classList.add("active");
+
+ if(m==="img"){
+  document.getElementById("query").placeholder=
+  "तस्वीर खोजें...";
+ }else{
+  document.getElementById("query").placeholder=
+  "यहाँ कुछ भी खोजें...";
+ }
+}
+
+function saveHistory(q){
+ let h=JSON.parse(
+  localStorage.getItem("shivkantHistory")||"[]"
+ );
+
+ h=h.filter(x=>x!==q);
+ h.unshift(q);
+ h=h.slice(0,20);
+
+ localStorage.setItem(
+  "shivkantHistory",JSON.stringify(h)
+ );
+
+ showHistory();
+}
+
+function showHistory(){
+ let h=JSON.parse(
+  localStorage.getItem("shivkantHistory")||"[]"
+ );
+
+ let box=document.getElementById("history");
+ box.innerHTML="";
+
+ if(!h.length){
+  box.textContent="अभी कोई History नहीं है।";
+  return;
+ }
+
+ h.forEach(q=>{
+  let row=document.createElement("div");
+  row.className="history-item";
+
+  let span=document.createElement("span");
+  span.textContent="🔍 "+q;
+  span.onclick=()=>{
+   document.getElementById("query").value=q;
+   searchNow();
+  };
+
+  row.appendChild(span);
+  box.appendChild(row);
+ });
+}
+
+function clearHistory(){
+ if(confirm("पूरी Search History साफ करें?")){
+  localStorage.removeItem("shivkantHistory");
+  showHistory();
+ }
+}
+
+function searchNow(){
+ let q=document.getElementById("query").value.trim();
+
+ if(!q){
+  alert("पहले कुछ लिखें!");
+  return;
+ }
+
+ saveHistory(q);
+
+ if(mode==="img"){
+  window.open(
+   "https://www.google.com/search?tbm=isch&q="+
+   encodeURIComponent(q),"_blank"
+  );
+  return;
+ }
+
+ if(mode==="web"){
+  window.open(
+   "https://www.google.com/search?q="+
+   encodeURIComponent(q),"_blank"
+  );
+  return;
+ }
+
+ searchDatabase(q);
+}
+
+function searchDatabase(q){
+ let words=q.toLowerCase().split(/\s+/);
+
+ let found=sites.filter(s=>{
+  let text=(s.title+" "+s.desc+" "+s.url).toLowerCase();
+  return words.every(w=>text.includes(w));
+ });
+
+ let box=document.getElementById("results");
+ box.innerHTML="";
+
+ let heading=document.createElement("h3");
+ heading.textContent="My Database Results";
+ box.appendChild(heading);
+
+ if(!found.length){
+  let p=document.createElement("p");
+  p.textContent="कोई वेबसाइट नहीं मिली। अपना Database बढ़ाएँ।";
+  box.appendChild(p);
+  return;
+ }
+
+ found.forEach(s=>renderResult(box,s));
+}
+
+function renderResult(box,s){
+ let div=document.createElement("div");
+ div.className="result";
+
+ let a=document.createElement("a");
+ a.textContent=s.title;
+ a.href=s.url;
+ a.target="_blank";
+ a.rel="noopener noreferrer";
+
+ let p=document.createElement("p");
+ p.textContent=s.desc;
+
+ let small=document.createElement("div");
+ small.className="small";
+ small.textContent=s.url;
+
+ div.append(a,small,p);
+ box.appendChild(div);
+}
+
+function addSite(){
+ let title=document.getElementById("siteTitle").value.trim();
+ let url=document.getElementById("siteUrl").value.trim();
+ let desc=document.getElementById("siteDesc").value.trim();
+
+ if(!title||!url||!desc){
+  alert("सभी जानकारी भरें!");
+  return;
+ }
+
+ try{
+  let parsed=new URL(url);
+
+  if(parsed.protocol!=="https:" &&
+     parsed.protocol!=="http:"){
+   throw new Error();
+  }
+ }catch(e){
+  alert("सही वेबसाइट लिंक डालें।");
+  return;
+ }
+
+ sites.push({title,url,desc});
+ saveSites();
+
+ document.getElementById("siteTitle").value="";
+ document.getElementById("siteUrl").value="";
+ document.getElementById("siteDesc").value="";
+
+ alert("वेबसाइट Database में जुड़ गई!");
+}
+
+function showSites(){
+ let box=document.getElementById("results");
+ box.innerHTML="";
+
+ let h=document.createElement("h3");
+ h.textContent="मेरी सभी वेबसाइटें";
+ box.appendChild(h);
+
+ sites.forEach((s,i)=>{
+  renderResult(box,s);
+
+  let btn=document.createElement("button");
+  btn.className="secondary";
+  btn.textContent="हटाएँ";
+
+  btn.onclick=()=>{
+   if(confirm("इस वेबसाइट को हटाएँ?")){
+    sites.splice(i,1);
+    saveSites();
+    showSites();
+   }
+  };
+
+  box.appendChild(btn);
+ });
+}
+
+function voiceSearch(){
+ let Speech=window.SpeechRecognition ||
+            window.webkitSpeechRecognition;
+
+ if(!Speech){
+  alert("इस Browser में Voice Search उपलब्ध नहीं है। Chrome में कोशिश करें।");
+  return;
+ }
+
+ let rec=new Speech();
+ rec.lang="hi-IN";
+ rec.interimResults=false;
+
+ rec.onresult=function(e){
+  document.getElementById("query").value=
+  e.results[0][0].transcript;
+  searchNow();
+ };
+
+ rec.onerror=function(){
+  alert("आवाज पहचान नहीं हुई। दोबारा कोशिश करें।");
+ };
+
+ rec.start();
+}
+
+function theme(){
+ document.body.classList.toggle("dark");
+ localStorage.setItem(
+  "shivkantDark",
+  document.body.classList.contains("dark")
+ );
+}
+
+if(localStorage.getItem("shivkantDark")==="true"){
+ document.body.classList.add("dark");
+}
+
+showHistory();
+
+// Firefox custom search support: ?q=search-term
+const searchParams = new URLSearchParams(window.location.search);
+const incomingQuery = searchParams.get("q");
+if (incomingQuery && incomingQuery.trim()) {
+  document.getElementById("query").value = incomingQuery.trim();
+  searchNow();
+}
+
+</script>
+
+</body>
+</html>
