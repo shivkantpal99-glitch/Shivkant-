@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#155eef">
+<title>Shivkant Digital System</title>
+<style>
+:root{--blue:#155eef;--bg:#f4f7fc;--card:#fff;--ink:#172033;--muted:#687386}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif}
+header{background:var(--card);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 9px #0001;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}.logo{background:var(--blue);color:white;border-radius:12px;padding:10px 13px;font-size:20px}
+nav{display:flex;gap:8px;justify-content:center;padding:12px;flex-wrap:wrap;background:var(--card)}
+button{border:0;border-radius:10px;padding:11px 15px;background:#e8eefb;color:var(--ink);font-weight:600;cursor:pointer}
+button.active,.primary{background:var(--blue);color:white}
+main{max-width:900px;margin:22px auto;padding:12px}
+.panel{background:var(--card);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 3px 14px #0000000a}
+h1{font-size:32px;color:var(--blue);text-align:center;margin:20px 0 5px}h2{font-size:21px;margin:4px 0 14px}
+.sub{text-align:center;color:var(--muted);margin:0 0 22px}
+.bar{display:flex;gap:8px;background:var(--card);border:1px solid #d9e0ec;padding:7px;border-radius:16px}
+input{min-width:0;flex:1;border:0;outline:0;padding:12px;font-size:16px;background:transparent;color:inherit}
+.bar button{white-space:nowrap}
+.hidden{display:none!important}.muted{color:var(--muted);font-size:13px}
+.item{padding:12px 0;border-bottom:1px solid #e8edf5;overflow-wrap:anywhere}.item:last-child{border:0}
+a{color:var(--blue);text-decoration:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+input.field{display:block;width:100%;border:1px solid #d9e0ec;border-radius:10px;margin:8px 0;padding:13px}
+.browserbar{display:flex;gap:6px;flex-wrap:wrap}.browserbar input{border:1px solid #d9e0ec;border-radius:10px}
+.note{background:#fff8df;border-radius:10px;padding:12px;color:#684e00;font-size:13px;line-height:1.5}
+footer{text-align:center;color:var(--muted);padding:25px;font-size:13px}
+@media(max-width:520px){.bar{flex-wrap:wrap}.bar input{flex-basis:100%}.bar button{flex:1}h1{font-size:27px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span class="logo">S</span><span>Shivkant Digital System</span></div><button onclick="toggleTheme()">◐</button></header>
+<nav><button id="searchTab" class="active" onclick="showPage('search')">🔎 Shivkant Search</button><button id="browserTab" onclick="showPage('browser')">🌐 Shivkant Browser</button></nav>
+<main>
+<section id="searchPage">
+<h1>Shivkant Search</h1><p class="sub">आपकी अपनी Search दुनिया</p>
+<div class="bar"><input id="query" placeholder="कुछ भी खोजें..." onkeydown="if(event.key==='Enter')doSearch()"><button onclick="doSearch()" class="primary">खोजें</button></div>
+<div class="grid" style="margin-top:14px">
+<button onclick="searchType='web';doSearch()">🌐 Web Search</button><button onclick="searchType='images';doSearch()">🖼️ Images</button><button onclick="searchType='videos';doSearch()">▶ Videos</button>
+</div>
+<div class="panel"><h2>📚 अपना वेबसाइट डेटाबेस</h2><p class="muted">अपनी पसंदीदा वेबसाइट सेव करें और बाद में खोजें।</p>
+<input id="siteName" class="field" placeholder="वेबसाइट का नाम"><input id="siteUrl" class="field" placeholder="https://example.com"><input id="siteInfo" class="field" placeholder="वेबसाइट की जानकारी">
+<button class="primary" onclick="addSite()">वेबसाइट सेव करें</button> <button onclick="findSites()">मेरे डेटाबेस में खोजें</button>
+<div id="siteResults"></div></div>
+<div class="panel"><h2>🕘 Search History</h2><div id="searchHistory"></div><button onclick="clearSearchHistory()">History साफ करें</button></div>
+</section>
+<section id="browserPage" class="hidden">
+<h1>Shivkant Browser</h1><p class="sub">वेबसाइट खोलें, बुकमार्क रखें और ब्राउज़िंग हिस्ट्री देखें</p>
+<div class="panel">
+<h2>🌍 Address / Search Bar</h2>
+<div class="browserbar"><input id="address" placeholder="वेबसाइट या कुछ खोजें..." onkeydown="if(event.key==='Enter')openAddress()"><button class="primary" onclick="openAddress()">Go</button></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button onclick="openAddress('https://www.google.com')">Google</button><button onclick="openAddress('https://www.wikipedia.org')">Wikipedia</button><button onclick="openAddress('https://www.youtube.com')">YouTube</button><button onclick="openAddress('https://duckduckgo.com')">DuckDuckGo</button></div>
+</div>
+<div class="note">सुरक्षा और वेबसाइटों की तकनीकी पाबंदियों के कारण यह Browser वेबसाइटों को नए टैब में खोलता है। यह Firefox/Chrome का विकल्प या पूर्ण सिस्टम Browser नहीं है।</div>
+<div class="grid">
+<div class="panel"><h2>⭐ Bookmarks</h2><button onclick="bookmarkCurrent()">मौजूदा लिंक सेव करें</button><div id="bookmarks"></div></div>
+<div class="panel"><h2>🕘 Browser History</h2><div id="browserHistory"></div><button onclick="clearBrowserHistory()">History साफ करें</button></div>
+</div>
+</section>
+</main>
+<footer>© 2026 Shivkant Digital System · Search + Browser</footer>
+<script>
+let searchType='web';
+const get=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(k))||d}catch{return d}};
+const put=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function showPage(p){document.getElementById('searchPage').classList.toggle('hidden',p!=='search');document.getElementById('browserPage').classList.toggle('hidden',p!=='browser');document.getElementById('searchTab').classList.toggle('active',p==='search');document.getElementById('browserTab').classList.toggle('active',p==='browser');}
+function doSearch(){let q=document.getElementById('query').value.trim();if(!q){alert('पहले कुछ लिखें');return}let h=get('shivSearchHistory');h=[q,...h.filter(x=>x!==q)].slice(0,15);put('shivSearchHistory',h);renderSearchHistory();let base=searchType==='images'?'https://duckduckgo.com/?iax=images&ia=images&q=':searchType==='videos'?'https://duckduckgo.com/?iax=videos&ia=videos&q=':'https://duckduckgo.com/?q=';window.open(base+encodeURIComponent(q),'_blank','noopener');}
+function addSite(){let title=document.getElementById('siteName').value.trim(),url=document.getElementById('siteUrl').value.trim(),desc=document.getElementById('siteInfo').value.trim();try{let u=new URL(url);if(!['http:','https:'].includes(u.protocol))throw 0}catch{alert('सही http/https लिंक डालें');return}if(!title){alert('वेबसाइट का नाम लिखें');return}let a=get('shivSites');a.push({title,url,desc});put('shivSites',a);['siteName','siteUrl','siteInfo'].forEach(id=>document.getElementById(id).value='');findSites();alert('वेबसाइट सेव हो गई');}
+function findSites(){let q=(document.getElementById('query').value||'').toLowerCase();let a=get('shivSites').filter(s=>(s.title+' '+s.url+' '+s.desc).toLowerCase().includes(q));let box=document.getElementById('siteResults');box.innerHTML='';a.forEach((s,i)=>{let d=document.createElement('div');d.className='item';let link=document.createElement('a');link.href=s.url;link.target='_blank';link.rel='noopener';link.textContent=s.title;let p=document.createElement('p');p.textContent=s.desc+' · '+s.url;let del=document.createElement('button');del.textContent='हटाएँ';del.onclick=()=>{let all=get('shivSites');all.splice(i,1);put('shivSites',all);findSites()};d.append(link,p,del);box.append(d)});if(!a.length)box.textContent='कोई वेबसाइट नहीं मिली।';}
+function renderSearchHistory(){let box=document.getElementById('searchHistory');box.innerHTML='';get('shivSearchHistory').forEach(q=>{let d=document.createElement('div');d.className='item';d.textContent='🔎 '+q;d.onclick=()=>{document.getElementById('query').value=q;doSearch()};box.append(d)});}
+function clearSearchHistory(){put('shivSearchHistory',[]);renderSearchHistory()}
+function normalizeAddress(v){v=v.trim();if(!v)return '';if(/^https?:\/\//i.test(v))return v;if(v.includes('.')&&!v.includes(' '))return 'https://'+v;return 'https://duckduckgo.com/?q='+encodeURIComponent(v)}
+function openAddress(v){let raw=v||document.getElementById('address').value;let url=normalizeAddress(raw);if(!url){alert('वेबसाइट या खोज लिखें');return}let h=get('shivBrowserHistory');h=[url,...h.filter(x=>x!==url)].slice(0,20);put('shivBrowserHistory',h);if(!v)document.getElementById('address').value=url;renderBrowserHistory();window.open(url,'_blank','noopener');}
+function bookmarkCurrent(){let url=document.getElementById('address').value.trim();if(!url){alert('पहले Address Bar में लिंक लिखें');return}url=normalizeAddress(url);let b=get('shivBookmarks');if(!b.includes(url))b.unshift(url);put('shivBookmarks',b);renderBookmarks();}
+function renderBookmarks(){let box=document.getElementById('bookmarks');box.innerHTML='';get('shivBookmarks').forEach(u=>{let d=document.createElement('div');d.className='item';let a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.textContent=u;d.append(a);box.append(d)})}
+function renderBrowserHistory(){let box=document.getElementById('browserHistory');box.innerHTML='';get('shivBrowserHistory').forEach(u=>{let d=document.createElement('div');d.className='item';let a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.textContent=u;d.append(a);box.append(d)})}
+function clearBrowserHistory(){put('shivBrowserHistory',[]);renderBrowserHistory()}
+function toggleTheme(){document.body.classList.toggle('night');let n=document.body.classList.contains('night');document.body.style.setProperty('--bg',n?'#151a27':'#f4f7fc');document.body.style.setProperty('--card',n?'#222a3b':'#fff');document.body.style.setProperty('--ink',n?'#f4f6fb':'#172033');}
+renderSearchHistory();renderBrowserHistory();renderBookmarks();
+</script>
+</body>
+</html>
